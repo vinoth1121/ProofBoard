@@ -7,8 +7,8 @@
 
 ![ProofBoard campaign detail with the film-strip proof-of-play timeline](docs/hero.png)
 
-An outdoor advertising campaign delivers a promise: *your ad ran, here are the
-proofs*. ProofBoard is the tool an advertiser opens when that promise needs
+An outdoor advertising campaign delivers a promise: _your ad ran, here are the
+proofs_. ProofBoard is the tool an advertiser opens when that promise needs
 checking — and it opens it as a **film strip**, one frame per verified play,
 with the screen ID and timestamp burned into each frame.
 
@@ -44,7 +44,7 @@ flagged plays carry a red badge. Nothing is stock photography: the artwork is
 drawn from the data, so it is stable, weighs ~2 KB, and cannot drift from the
 row it represents.
 
-*Why it matters:* an auditor can scan 40 frames in two seconds and spot the
+_Why it matters:_ an auditor can scan 40 frames in two seconds and spot the
 anomaly before reading a single number.
 
 ### 2. All filter state lives in the URL
@@ -55,7 +55,7 @@ is a complete, shareable view; back/forward walk the filter history; a shared
 link reproduces the screen exactly. The debounced search commits with
 `replace` so typing does not fill the back button.
 
-*Why it matters:* "can you send me the screen where…" stops being a support
+_Why it matters:_ "can you send me the screen where…" stops being a support
 ticket and becomes a copy-paste.
 
 ### 3. Optimistic updates that actually roll back
@@ -85,24 +85,24 @@ fallback stacks. A light "paper blueprint" theme ships alongside it. No UI kit.
 
 ## Features
 
-| | |
-|---|---|
-| **Campaign index** | Debounced search, status/city filters, five sort keys with direction, pagination, all URL-synced |
-| **Campaign detail** | Delivered vs booked, shortfall and completion stats, film-strip timeline, play log table, date-range filter with 7/30/90-day presets |
-| **Proof modal** | Focus-trapped, `Esc` closes, `←`/`→` step through frames, restores focus to the trigger |
-| **Flag as suspicious** | Optimistic paint, per-play pending spinner, exact rollback, dismissible error banner |
-| **States** | Blueprint skeletons, error panels with retry, drawn empty states, 404 sheet |
-| **Code splitting** | Detail route is a `React.lazy` chunk (24 kB) fetched on demand |
-| **A11y** | Semantic landmarks, `aria-live` result counts, `aria-pressed` filters, `aria-current` pagination, full keyboard operability, `prefers-reduced-motion` honoured |
+|                        |                                                                                                                                                                |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Campaign index**     | Debounced search, status/city filters, five sort keys with direction, pagination, all URL-synced                                                               |
+| **Campaign detail**    | Delivered vs booked, shortfall and completion stats, film-strip timeline, play log table, date-range filter with 7/30/90-day presets                           |
+| **Proof modal**        | Focus-trapped, `Esc` closes, `←`/`→` step through frames, restores focus to the trigger                                                                        |
+| **Flag as suspicious** | Optimistic paint, per-play pending spinner, exact rollback, dismissible error banner                                                                           |
+| **States**             | Blueprint skeletons, error panels with retry, drawn empty states, 404 sheet                                                                                    |
+| **Code splitting**     | Detail route is a `React.lazy` chunk (24 kB) fetched on demand                                                                                                 |
+| **A11y**               | Semantic landmarks, `aria-live` result counts, `aria-pressed` filters, `aria-current` pagination, full keyboard operability, `prefers-reduced-motion` honoured |
 
 ### Keyboard map
 
-| Key | Action |
-|---|---|
+| Key                 | Action                                                      |
+| ------------------- | ----------------------------------------------------------- |
 | `Tab` / `Shift+Tab` | Move through frames and controls (trapped inside the modal) |
-| `Enter` / `Space` | Open the focused proof frame |
-| `←` `→` | Previous / next frame (in the modal) |
-| `Esc` | Close the modal |
+| `Enter` / `Space`   | Open the focused proof frame                                |
+| `←` `→`             | Previous / next frame (in the modal)                        |
+| `Esc`               | Close the modal                                             |
 
 ---
 
@@ -154,7 +154,7 @@ fallback stacks. A light "paper blueprint" theme ships alongside it. No UI kit.
    └────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Layering rule:** `lib/filters.ts` is pure and framework-free, and *both* the
+**Layering rule:** `lib/filters.ts` is pure and framework-free, and _both_ the
 React list and the mock handlers call it. The view and the "server" therefore
 cannot disagree about what a filter means — and the filter logic is unit-tested
 without rendering anything.
