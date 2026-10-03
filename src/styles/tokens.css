@@ -1,0 +1,139 @@
+/* =========================================================================
+   ProofBoard design tokens — "architect's blueprint"
+   Dark default: deep navy ground, cyan line work.
+   Light variant: "paper blueprint" — white-blue sheet, navy line work.
+   ========================================================================= */
+
+:root {
+  /* --- Type ---------------------------------------------------------- */
+  --font-display: 'Space Grotesk', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue',
+    Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SFMono-Regular', 'Cascadia Mono', Consolas, 'Liberation Mono',
+    'Courier New', monospace;
+
+  /* --- Scale --------------------------------------------------------- */
+  --step--1: 0.6875rem; /* 11px — dimension labels, stamps */
+  --step-0: 0.8125rem; /* 13px — table body, controls */
+  --step-1: 1rem; /* 16px — body */
+  --step-2: 1.375rem; /* 22px — card titles */
+  --step-3: 2rem; /* 32px — page titles */
+  --step-4: 3rem; /* 48px — hero numerals */
+
+  /* --- Space (4px base) ---------------------------------------------- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+
+  /* --- Line weights --------------------------------------------------- */
+  --hairline: 1px;
+  --rule: 1px;
+  --rule-heavy: 2px;
+
+  /* --- Geometry ------------------------------------------------------- */
+  --radius-0: 0px;
+  --radius-1: 2px;
+  --radius-2: 4px;
+  --crop-mark: 14px;
+  --card-pad: var(--space-5);
+
+  /* --- Motion --------------------------------------------------------- */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 120ms;
+  --dur-base: 220ms;
+  --dur-slow: 420ms;
+
+  /* --- Status hues (theme independent, tuned per theme below) --------- */
+  --hue-cyan: 186;
+  --hue-amber: 38;
+  --hue-red: 355;
+  --hue-green: 152;
+  --hue-violet: 268;
+}
+
+/* =========================== DARK: deep navy ============================ */
+:root,
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg-ground: #071426;
+  --bg-sheet: #0b1f3a;
+  --bg-sheet-raised: #102a4c;
+  --bg-inset: #081a30;
+  --bg-scrim: rgba(4, 12, 24, 0.82);
+
+  --ink: #eef4ff;
+  --ink-muted: #93a9c7;
+  --ink-faint: #5f7699;
+
+  --line: rgba(92, 225, 230, 0.28);
+  --line-strong: rgba(92, 225, 230, 0.62);
+  --line-faint: rgba(92, 225, 230, 0.12);
+  --line-ink: rgba(238, 244, 255, 0.14);
+
+  --accent: #5ce1e6;
+  --accent-soft: rgba(92, 225, 230, 0.14);
+  --accent-ink: #071426;
+
+  --live: #5ce1e6;
+  --scheduled: #f2b544;
+  --ended: #8fa6c4;
+  --flagged: #ff6b81;
+  --flagged-soft: rgba(255, 107, 129, 0.16);
+  --ok: #4ade9a;
+
+  --grid-line: rgba(92, 225, 230, 0.07);
+  --grid-line-bold: rgba(92, 225, 230, 0.14);
+
+  --shadow-sheet: 0 18px 40px -24px rgba(0, 0, 0, 0.9);
+  --shadow-pop: 0 40px 90px -30px rgba(0, 0, 0, 0.95);
+  --skeleton-sheen: rgba(92, 225, 230, 0.1);
+}
+
+/* ====================== LIGHT: paper blueprint ======================== */
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --bg-ground: #dfe8f4;
+  --bg-sheet: #f7fafd;
+  --bg-sheet-raised: #ffffff;
+  --bg-inset: #eaf1f8;
+  --bg-scrim: rgba(11, 31, 58, 0.42);
+
+  --ink: #0b1f3a;
+  --ink-muted: #47607f;
+  --ink-faint: #7a8ea8;
+
+  --line: rgba(11, 31, 58, 0.24);
+  --line-strong: rgba(11, 31, 58, 0.55);
+  --line-faint: rgba(11, 31, 58, 0.1);
+  --line-ink: rgba(11, 31, 58, 0.12);
+
+  --accent: #0e6f8f;
+  --accent-soft: rgba(14, 111, 143, 0.12);
+  --accent-ink: #ffffff;
+
+  --live: #0e6f8f;
+  --scheduled: #a8690a;
+  --ended: #5b708b;
+  --flagged: #c22744;
+  --flagged-soft: rgba(194, 39, 68, 0.12);
+  --ok: #0f7a4f;
+
+  --grid-line: rgba(11, 31, 58, 0.07);
+  --grid-line-bold: rgba(11, 31, 58, 0.13);
+
+  --shadow-sheet: 0 14px 30px -22px rgba(11, 31, 58, 0.5);
+  --shadow-pop: 0 40px 80px -34px rgba(11, 31, 58, 0.45);
+  --skeleton-sheen: rgba(11, 31, 58, 0.08);
+}
+
+/* Redundant explicit dark block kept for cascade safety when the attribute
+   is applied late (React sets data-theme on <html> after first paint). */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+}
