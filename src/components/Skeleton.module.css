@@ -1,0 +1,101 @@
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-inset);
+  border: var(--rule) solid var(--line-faint);
+}
+
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--skeleton-sheen) 45%,
+    var(--skeleton-sheen) 55%,
+    transparent 100%
+  );
+  animation: sweep 1.5s var(--ease-out) infinite;
+}
+
+@keyframes sweep {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--card-pad);
+}
+
+.line {
+  height: 10px;
+}
+
+.lineSm {
+  height: 8px;
+}
+
+.lineTitle {
+  height: 18px;
+  width: 70%;
+}
+
+.lineLabel {
+  height: 8px;
+  width: 38%;
+}
+
+.statRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+}
+
+.stat {
+  height: 62px;
+}
+
+.frameStrip {
+  display: flex;
+  gap: var(--space-2);
+  overflow: hidden;
+}
+
+.frameStrip > * {
+  flex: 0 0 132px;
+  aspect-ratio: 16 / 9;
+}
+
+.table {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 92px 1fr 128px 84px 74px;
+  gap: var(--space-3);
+  align-items: center;
+  height: 34px;
+}
+
+.tableRow > * {
+  height: 10px;
+}
+
+.tableHead {
+  height: 26px;
+}
