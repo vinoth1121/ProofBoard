@@ -1,0 +1,62 @@
+.frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-inset);
+}
+
+.text {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+}
+
+.stamp {
+  fill: #eef4ff;
+  paint-order: stroke;
+  stroke: rgba(0, 0, 0, 0.55);
+  stroke-width: 2.4px;
+  stroke-linejoin: round;
+}
+
+.stampQuiet {
+  fill: rgba(238, 244, 255, 0.72);
+}
+
+.micro {
+  font-family: var(--font-mono);
+  font-size: 7px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.screenId {
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.clock {
+  font-size: 10px;
+  font-weight: 700;
+  text-anchor: end;
+}
+
+.footLeft {
+  font-size: 7px;
+  text-anchor: start;
+}
+
+.footRight {
+  font-size: 7px;
+  text-anchor: end;
+}
+
+.chip {
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.scanlines {
+  mix-blend-mode: overlay;
+}
