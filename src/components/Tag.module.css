@@ -1,0 +1,64 @@
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 2px var(--space-2);
+  border: var(--rule) solid currentColor;
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  background: currentColor;
+}
+
+.live {
+  color: var(--live);
+}
+
+.live .dot {
+  animation: pulse 1.8s var(--ease-out) infinite;
+}
+
+.scheduled {
+  color: var(--scheduled);
+}
+
+.ended {
+  color: var(--ended);
+}
+
+.verified {
+  color: var(--ok);
+}
+
+.unverified {
+  color: var(--scheduled);
+}
+
+.flagged {
+  color: var(--flagged);
+  background: var(--flagged-soft);
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live .dot {
+    animation: none;
+  }
+}
