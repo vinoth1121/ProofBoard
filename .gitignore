@@ -5,3 +5,6 @@ coverage
 *.local
 .DS_Store
 *.log
+
+# Raw capture frames written by scripts/smoke.mjs; the encoded GIF is committed.
+docs/shots/
