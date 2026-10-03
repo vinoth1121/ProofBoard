@@ -1,7 +1,9 @@
 # ProofBoard
 
-> **Live demo → https://proofboard.vercel.app**
-> Try a deep link straight away: https://proofboard.vercel.app/campaigns/c-007
+> **Live demo → https://proofboard-lemon.vercel.app**
+> Deep link straight into a campaign: https://proofboard-lemon.vercel.app/campaigns/c-007
+>
+> Source: [github.com/vinoth1121/ProofBoard](https://github.com/vinoth1121/ProofBoard)
 
 ![ProofBoard campaign detail with the film-strip proof-of-play timeline](docs/hero.png)
 
@@ -182,15 +184,24 @@ npm run test:watch # watch mode
 npm run lint       # ESLint, zero warnings tolerated
 npm run format     # Prettier write
 npm run typecheck  # tsc -b
-npm run smoke -- http://localhost:4173   # real-Chrome smoke test (see below)
+npm run smoke -- https://proofboard-lemon.vercel.app   # real-Chrome smoke test
 ```
 
-`npm run smoke` drives the **built** bundle in your installed Chrome or Edge
-(Playwright core, no browser download) and asserts 17 behaviours: cards render
-from the mock API, filter state round-trips through the URL, `/campaigns/c-007`
-survives a hard refresh, the modal traps focus and steps frames with arrow keys,
-flagging paints optimistically and settles, empty and 404 states draw, and the
-theme toggles. It also captures the README frames:
+`npm run smoke` drives a **running deployment** — local or live — in your
+installed Chrome or Edge (Playwright core, no browser download) and asserts 16
+behaviours end to end: cards render from the mock API, filter state round-trips
+through the URL, `/campaigns/c-007` survives a hard refresh, the modal traps
+focus and steps frames with arrow keys, flagging paints optimistically and then
+settles (committed or rolled back), empty and 404 states draw, the theme toggles,
+and nothing unexpected reaches the console. Point it at production to verify a
+deploy:
+
+```bash
+npm run smoke -- https://proofboard-lemon.vercel.app
+```
+
+Adding `--shots <dir>` captures the README frames (the film-strip panning
+sequence, both palettes and the index) from a local preview server:
 
 ```bash
 npm run build
