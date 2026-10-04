@@ -218,6 +218,55 @@ optimistic-update and rollback path, and the detail route end to end.
 
 ---
 
+## Continuous integration
+
+Two workflows in `.github/workflows/`, both triggered by a push to `main`:
+
+```
+git push
+   │
+   ├──▶ CI        (ci.yml)  format:check → lint → typecheck → test → build
+   │                       │
+   │                  all green ──▶ uploads dist/ as an artifact
+   │                       │
+   │                  any red ──▶ stops here
+   │
+   └──▶ Deploy    (deploy.yml, fires on workflow_run = CI completed + success)
+              ├──▶ job: deploy  — POSTs the Vercel deploy hook
+              └──▶ job: verify  — asserts the live site actually serves
+                                 deep links, the SPA rewrite and the MSW worker
+```
+
+**`ci.yml`** runs on Node 24 (the version Vercel builds with), caches `npm`,
+cancels superseded runs on the same ref, and needs only `contents: read`
+permission. It is the gate: a red commit is visible on the push before anything
+reaches production.
+
+**`deploy.yml`** is where CI becomes the thing that decides to deploy. Its
+`verify` job is the check unit tests cannot do — it hits the live URL and
+asserts that `/campaigns/c-007` returns the SPA shell, that
+`/mockServiceWorker.js` is served, and that an unknown route falls back to
+`index.html`. That is the exact failure mode an SPA rewrite or a missing
+service worker would cause in production, and it is invisible to jsdom.
+
+**Making production strictly CI-gated (one toggle left).** The `deploy` job is
+inert until a hook is registered, and it says so in its log rather than failing
+— so the repo is safe to clone and run without any secrets. To switch the gate
+on:
+
+1. In Vercel: **Project → Settings → Git → Deploy Hooks → Create**, target
+   `main`, copy the hook URL.
+2. In GitHub: **Settings → Secrets and variables → Actions → New repository
+   secret** named `VERCEL_DEPLOY_HOOK_URL`, paste the URL.
+3. In Vercel: **Settings → Git**, turn off automatic deployment for `main`.
+
+Until step 3, Vercel's Git integration still builds every push on its own, so
+CI and the deploy run in parallel — the CI result is then advisory rather than
+blocking. With all three steps done, the diagram above is exactly what happens:
+nothing ships unless the gate is green.
+
+---
+
 ## Design notes
 
 - **The theme is applied before first paint.** A tiny inline script in
