@@ -252,21 +252,32 @@ asserts that `/campaigns/c-007` returns the SPA shell, that
 `index.html`. That is the exact failure mode an SPA rewrite or a missing
 service worker would cause in production, and it is invisible to jsdom.
 
-**Making production strictly CI-gated (one toggle left).** The `deploy` job is
-inert until a hook is registered, and it says so in its log rather than failing
-— so the repo is safe to clone and run without any secrets. To switch the gate
-on:
+**The deploy hook is configured.** `VERCEL_DEPLOY_HOOK_URL` is registered as a
+Vercel deploy hook (`github-actions-ci`, branch `main`) and the same URL is
+stored as the GitHub Actions secret of that name, so a green CI run POSTs it and
+Vercel builds production. Evidence from a single push of `d85b358`:
 
-1. In Vercel: **Project → Settings → Git → Deploy Hooks → Create**, target
-   `main`, copy the hook URL.
-2. In GitHub: **Settings → Secrets and variables → Actions → New repository
-   secret** named `VERCEL_DEPLOY_HOOK_URL`, paste the URL.
-3. In Vercel: **Settings → Git**, turn off automatic deployment for `main`.
+```
+10:31:00  CI started                  (also: Vercel's own git auto-deploy)
+10:32:17  CI finished — success
+10:32:19  Deploy workflow started     (workflow_run, CI conclusion = success)
+10:32:29  Vercel deployment created   <- the hook firing from inside the job
+10:32:36  Deploy workflow finished — success
+```
 
-Until step 3, Vercel's Git integration still builds every push on its own, so
-CI and the deploy run in parallel — the CI result is then advisory rather than
-blocking. With all three steps done, the diagram above is exactly what happens:
-nothing ships unless the gate is green.
+Without the secret the job does not fail; it emits a `::notice` and exits 0, so
+anyone who clones this repo can run it with no configuration at all.
+
+**One toggle remains, and it is a dashboard-only setting.** Vercel's Git
+integration is _also_ still building every push on its own, which is why `d85b358`
+produced two deployments rather than one. So today CI gates the hook path but
+Vercel's own path is still ungated — CI is advisory, not blocking. To close it:
+
+**Vercel → Project → Settings → Git → uncheck automatic deployment for `main`.**
+
+There is no API for that toggle, so it cannot be automated safely. With it off,
+the diagram above becomes literal: exactly one production build per push, and it
+only happens after the gate is green.
 
 ---
 
