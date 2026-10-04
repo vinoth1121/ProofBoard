@@ -1,5 +1,8 @@
 # ProofBoard
 
+[![CI](https://github.com/vinoth1121/ProofBoard/actions/workflows/ci.yml/badge.svg)](https://github.com/vinoth1121/ProofBoard/actions/workflows/ci.yml)
+[![Deploy](https://github.com/vinoth1121/ProofBoard/actions/workflows/deploy.yml/badge.svg)](https://github.com/vinoth1121/ProofBoard/actions/workflows/deploy.yml)
+
 > **Live demo → https://proofboard-lemon.vercel.app**
 > Deep link straight into a campaign: https://proofboard-lemon.vercel.app/campaigns/c-007
 >
