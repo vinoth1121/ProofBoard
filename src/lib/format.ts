@@ -43,11 +43,6 @@ export function toDateInputValue(iso: string): string {
   return new Date(iso).toISOString().slice(0, 10);
 }
 
-/** `2026-04-18` (yyyy-mm-dd) -> ISO timestamp at 00:00 UTC. */
-export function fromDateInputValue(value: string): string {
-  return new Date(`${value}T00:00:00.000Z`).toISOString();
-}
-
 /** `2026-04-18T09:41:00.000Z` -> `09:41` */
 export function formatShortTime(iso: string): string {
   const d = new Date(iso);
@@ -74,11 +69,6 @@ export function formatCompact(value: number): string {
   if (value < 1000) return String(value);
   const k = value / 1000;
   return `${k >= 10 ? Math.round(k) : k.toFixed(1)}k`;
-}
-
-/** `12.5%` from a ratio in [0, 1]. */
-export function formatRatio(value: number): string {
-  return `${(value * 100).toFixed(1)}%`;
 }
 
 /** Human duration: `90` -> `01:30`. */

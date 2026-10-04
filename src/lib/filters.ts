@@ -224,14 +224,3 @@ export function statsFor(plays: readonly Play[], booked: number): PlayStats {
   const completion = booked <= 0 ? 0 : Math.min(100, Math.round((delivered / booked) * 100));
   return { delivered, booked, verified, flagged, completion };
 }
-
-/**
- * Window stepper: produce a compact range list for the timeline ruler given a
- * date window. Kept here (not in the component) so it can be unit tested.
- */
-export function dateWindowLabel(fromIso: string, toIso: string): string {
-  const from = new Date(fromIso);
-  const to = new Date(toIso);
-  if (Number.isNaN(from.getTime()) || Number.isNaN(to.getTime())) return 'ALL DATES';
-  return `${from.toISOString().slice(0, 10)} → ${to.toISOString().slice(0, 10)}`;
-}

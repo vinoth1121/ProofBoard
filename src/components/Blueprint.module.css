@@ -8,11 +8,6 @@
   box-shadow: var(--shadow-sheet);
 }
 
-.sheetFlush {
-  background: transparent;
-  border: none;
-  box-shadow: none;
-}
 
 .sheetInset {
   background: var(--bg-inset);
@@ -165,7 +160,3 @@
   color: var(--ink-faint);
 }
 
-/* --- Faint drafting hatch used behind inset panels ---------------------- */
-.hatch {
-  background-image: repeating-linear-gradient(-45deg, var(--line-faint) 0 1px, transparent 1px 6px);
-}

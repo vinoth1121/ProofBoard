@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { useId } from 'react';
 import styles from './Blueprint.module.css';
 
-type SheetTone = 'default' | 'raised' | 'inset' | 'flush';
+type SheetTone = 'default' | 'raised' | 'inset';
 
 export interface BlueprintSheetProps {
   readonly children: ReactNode;
@@ -26,13 +26,7 @@ export function BlueprintSheet({
   style,
 }: BlueprintSheetProps) {
   const toneClass =
-    tone === 'raised'
-      ? styles.sheetRaised
-      : tone === 'inset'
-        ? styles.sheetInset
-        : tone === 'flush'
-          ? styles.sheetFlush
-          : '';
+    tone === 'raised' ? styles.sheetRaised : tone === 'inset' ? styles.sheetInset : '';
 
   const classes = [styles.sheet, toneClass, className].filter(Boolean).join(' ');
 

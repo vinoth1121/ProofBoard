@@ -292,7 +292,3 @@ export function nextLatencyMs(): number {
 export function shouldFail(): boolean {
   return chaos.chance(mockApiConfig.failureRate);
 }
-
-export function totalCampaignCount(): number {
-  return CAMPAIGNS.length;
-}
