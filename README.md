@@ -252,32 +252,46 @@ asserts that `/campaigns/c-007` returns the SPA shell, that
 `index.html`. That is the exact failure mode an SPA rewrite or a missing
 service worker would cause in production, and it is invisible to jsdom.
 
-**The deploy hook is configured.** `VERCEL_DEPLOY_HOOK_URL` is registered as a
-Vercel deploy hook (`github-actions-ci`, branch `main`) and the same URL is
-stored as the GitHub Actions secret of that name, so a green CI run POSTs it and
-Vercel builds production. Evidence from a single push of `d85b358`:
+**The gate is closed: exactly one production build per push, and only after CI is
+green.** Three pieces make that true:
+
+1. **A Vercel deploy hook** (`github-actions-ci`, branch `main`), whose URL is
+   stored as the GitHub Actions secret `VERCEL_DEPLOY_HOOK_URL`.
+2. **`git.deploymentEnabled` in `vercel.json`**, which switches off Vercel's own
+   automatic Git deployment for `main` while leaving every other branch alone:
+
+   ```json
+   { "git": { "deploymentEnabled": { "main": false } } }
+   ```
+
+   Per Vercel's published schema, this field names "the branches that will not
+   trigger an auto-deployment when committing to them. Any non specified branch is
+   `true` by default" — so feature branches still get previews, and only `main`
+   is gated.
+
+3. **`deploy.yml`**, whose `workflow_run` trigger fires only when CI concluded
+   `success`, and whose `verify` job then asserts the live site actually serves
+   deep links, the SPA rewrite and the MSW worker — the failure mode jsdom
+   cannot see.
+
+Proof it is a real gate, from the push that introduced step 2 (`ffdaebb`):
 
 ```
-10:31:00  CI started                  (also: Vercel's own git auto-deploy)
-10:32:17  CI finished — success
-10:32:19  Deploy workflow started     (workflow_run, CI conclusion = success)
-10:32:29  Vercel deployment created   <- the hook firing from inside the job
-10:32:36  Deploy workflow finished — success
+10:49:35  push
+10:49:42  CI started
+10:50:27  CI finished — success
+10:50:29  Deploy workflow started      (workflow_run, conclusion = success)
+10:50:40  Vercel deployment created    <- the hook, firing inside the job
+10:50:45  Deploy finished — success
 ```
 
-Without the secret the job does not fail; it emits a `::notice` and exits 0, so
-anyone who clones this repo can run it with no configuration at all.
+There is no build at the ~10:49:40 mark where the Git integration used to deploy
+on its own. Before that commit every push produced two deployments (`d85b358`,
+`dfaad80`); `ffdaebb` produced one.
 
-**One toggle remains, and it is a dashboard-only setting.** Vercel's Git
-integration is _also_ still building every push on its own, which is why `d85b358`
-produced two deployments rather than one. So today CI gates the hook path but
-Vercel's own path is still ungated — CI is advisory, not blocking. To close it:
-
-**Vercel → Project → Settings → Git → uncheck automatic deployment for `main`.**
-
-There is no API for that toggle, so it cannot be automated safely. With it off,
-the diagram above becomes literal: exactly one production build per push, and it
-only happens after the gate is green.
+Without the secret the `deploy` job does not fail — it emits a `::notice` and
+exits 0, so anyone who clones this repo can run it with no configuration at all.
+That is the safe default: a missing secret should not break the repository.
 
 ---
 
