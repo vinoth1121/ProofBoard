@@ -1,0 +1,94 @@
+name: Deploy
+
+# Fires only after CI has finished green on main. This is the piece that turns
+# "push -> deploy" into "push -> verify -> deploy".
+#
+# It stays inert until VERCEL_DEPLOY_HOOK_URL is set as an Actions secret:
+# without it the job logs why it is skipping and exits successfully, so the
+# repository is still usable for anyone who clones it.
+on:
+  workflow_run:
+    workflows: ['CI']
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Trigger Vercel production deploy
+    # Only a successful CI run on main may deploy.
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+
+    steps:
+      - name: Deploy via Vercel deploy hook
+        env:
+          VERCEL_DEPLOY_HOOK_URL: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+        run: |
+          set -euo pipefail
+          if [ -z "${VERCEL_DEPLOY_HOOK_URL}" ]; then
+            echo "::notice title=Deploy skipped::VERCEL_DEPLOY_HOOK_URL is not set."
+            echo "Vercel's Git integration deploys on push instead. To gate deploys behind CI,"
+            echo "create a hook (vercel.com -> Project -> Settings -> Git -> Deploy Hooks) and add it"
+            echo "as the repository secret VERCEL_DEPLOY_HOOK_URL."
+            exit 0
+          fi
+          echo "Triggering Vercel production deployment…"
+          curl --fail --silent --show-error --request POST "${VERCEL_DEPLOY_HOOK_URL}"
+          echo "Deploy hook accepted."
+
+  verify:
+    name: Verify the live deployment
+    # Independent of the hook above: proves the deployed SPA actually serves
+    # deep links and the MSW worker, which is the one thing unit tests cannot.
+    needs: [deploy]
+    if: always() && github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Check deep link, SPA rewrite and service worker
+        env:
+          PRODUCTION_URL: https://proofboard-lemon.vercel.app
+        run: |
+          set -euo pipefail
+
+          echo "Waiting for the deployment to become reachable…"
+          for attempt in $(seq 1 20); do
+            status=$(curl --silent --output /dev/null --write-out '%{http_code}' \
+              "${PRODUCTION_URL}/campaigns/c-007" || true)
+            if [ "${status}" = "200" ]; then
+              echo "Reachable after ${attempt} attempt(s)."
+              break
+            fi
+            if [ "${attempt}" -eq 20 ]; then
+              echo "::error::Deployment never became reachable (last status ${status})."
+              exit 1
+            fi
+            sleep 15
+          done
+
+          echo "::group::Assertions"
+          body=$(curl --fail --silent --show-error "${PRODUCTION_URL}/campaigns/c-007")
+          grep --quiet 'id="root"' <<<"${body}" \
+            || { echo "::error::Deep link did not return the SPA shell."; exit 1; }
+          echo "✓ deep link returns the SPA shell"
+
+          worker=$(curl --silent --output /dev/null --write-out '%{http_code}' \
+            "${PRODUCTION_URL}/mockServiceWorker.js")
+          [ "${worker}" = "200" ] \
+            || { echo "::error::MSW service worker not served (status ${worker})."; exit 1; }
+          echo "✓ MSW service worker is served"
+
+          unknown=$(curl --silent --output /dev/null --write-out '%{http_code}' \
+            "${PRODUCTION_URL}/no-such-route")
+          [ "${unknown}" = "200" ] \
+            || { echo "::error::Unknown route did not fall back to index.html."; exit 1; }
+          echo "✓ unknown routes fall back to index.html"
+          echo "::endgroup::"
+
+          echo "Deployment verified at ${PRODUCTION_URL}"
